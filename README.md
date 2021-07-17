@@ -2,6 +2,16 @@
 
 This is a simple diceword passphrase generator script which uses a limited dictionary to create easy-to-memorize and fast-to-type passphrases of known entropy.
 
+## Installation
+
+Just clone the repo and run from the repo root.
+
+## Usage
+
+```bash
+./fastword.rb [word count (default 5)]
+```
+
 ## Goals
 
 1. Memorability
