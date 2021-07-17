@@ -10,6 +10,6 @@ jobs:
       - name: Verify unique words
         run: |
           ruby -r 'json' -e \
-          'list = JSON.parse("words.json"); exit list.uniq == list'
+          'list = JSON.parse(File.read("words.json")); exit list.uniq == list'
       - name: Prove unique sequences
         run: ruby ./proveunique.rb
