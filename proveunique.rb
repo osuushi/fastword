@@ -17,9 +17,6 @@ WORDS = JSON.parse(File.read(File.join(File.dirname(__FILE__), "words.json")))
 #   fga
 # )
 
-WORD_COUNT = (ARGV.first || 5).to_i
-puts "Checking for #{WORD_COUNT} words"
-
 # Example from the test dictionary above
 '''
 aaa|bbb|ccd|efga
@@ -54,24 +51,32 @@ end
 # Return one ambiguous sequence of words which can be resegmented starting with
 # `left` (which is the remainder of the previous search), or nil if none can be
 # found
-def check(left, depth, ignore_same_left = false)
-  # If depth is zero, then we have a match only if `left` is a word in the dictionary
-  if depth.zero?
-    if WORDS.include?(left)
-      return [left]
-    else
-      return nil
-    end
+def check(left, is_seed = false)
+  $seen = {} if is_seed
+  # If we've already seen a prefix, then there are two cases:
+  # 1. This is a cycle. There could be a sequence involving this cycle, but if
+  #    so, we're guaranteed to find a sequence with the cycle removed.
+  # 2. We've already determined that there's no ambiguous sequence for this seed
+  #    once you hit this prefix.
+  return nil if $seen[left]
+  $seen[left] = true
+
+  # If we got an empty prefix, that means we've matched a whole word, which
+  # means that the sequence on the call stack is ambiguous.
+  if left == ""
+    return []
   end
 
   # Find all words prefixed by the left remainder
   WORDS.each do |right|
-    next if ignore_same_left && right == left
+    # If this is the seed word (the word passed in at the top level), we'll
+    # always find that word in the list. This is a trivial case, and not an
+    # ambiguous sequence.
+    next if is_seed && right == left
     next unless right.start_with?(left)
     remainder = right[left.length..]
-    # puts left + "|" + remainder + " " + depth.to_s
     # Try to find a sequence from the remainder onward
-    result = check(remainder, depth - 1)
+    result = check(remainder)
     if result
       return [left] + result
     end
@@ -79,14 +84,17 @@ def check(left, depth, ignore_same_left = false)
   return nil
 end
 
-
+found = false
 WORDS.each do |word|
-  # Compute the allowed depth from the word count
-  result = check(word, (WORD_COUNT - 1) * 2 , true)
+  result = check(word, true)
   if result
+    found = true
     puts "Found ambiguous sequence: #{result.join("|")}"
-    exit 1
   end
 end
 
-puts "No ambiguous sequences found"
+if found
+  exit 1
+else
+  puts "No ambiguous sequences found"
+end
