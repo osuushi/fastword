@@ -8,8 +8,8 @@ def randword
   WORDS[SecureRandom.rand(WORDS.length)]
 end
 
-WORD_COUNT = 5
+WORD_COUNT = (ARGV.first || 5).to_i
 
-password = WORD_COUNT.times.map { randword }.map(&:capitalize).join("")
+password = WORD_COUNT.times.map { randword }.join(" ")
 puts password
 puts "Entropy: #{WORD_COUNT*Math.log2(WORDS.length)}"
