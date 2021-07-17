@@ -17,7 +17,8 @@ WORDS = JSON.parse(File.read(File.join(File.dirname(__FILE__), "words.json")))
 #   fga
 # )
 
-WORD_COUNT = (ARGV[1] || 5).to_i
+WORD_COUNT = (ARGV.first || 5).to_i
+puts "Checking for #{WORD_COUNT} words"
 
 # Example from the test dictionary above
 '''
