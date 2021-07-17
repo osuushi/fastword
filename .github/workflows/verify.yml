@@ -1,0 +1,16 @@
+# Check that the word list is unique and that it does not create ambiguous sequences.
+
+name: Verify Wordlist
+on: push
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Verify unique words
+        run: |
+          ruby -r 'json' -e \
+          'list = JSON.parse(File.read(File.join(__dir__, "words.json"))); exit list.uniq == list'
+      - name: Prove unique sequences
+        run: |
+          ruby ./proveunique.rb

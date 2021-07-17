@@ -1,7 +1,7 @@
 # This script shows that it is impossible to create any password the
 # same way out of two different sequences of words from the word list.
 require 'json'
-WORDS = JSON.parse(File.read(File.join(File.dirname(__FILE__), "words.json")))
+WORDS = JSON.parse(File.read(File.join(__dir__, "words.json")))
 
 # Test words. There's a known ambiguity here for N = 4:
 #   aaab|bbc|cde|fga

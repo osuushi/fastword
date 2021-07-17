@@ -2,7 +2,7 @@
 
 require 'securerandom'
 require 'json'
-WORDS = JSON.parse(File.read(File.join(File.dirname(__FILE__), "words.json")))
+WORDS = JSON.parse(File.read(File.join(__dir__, "words.json")))
 
 def randword
   WORDS[SecureRandom.rand(WORDS.length)]
